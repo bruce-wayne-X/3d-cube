@@ -25,6 +25,7 @@ struct coord
 vector<coord> myvector;
 int player[3][3][3];
 coord arax[1000];
+long long scorep[1000];
 int check(int n,int x)
 {
 	if(x>=n)
@@ -127,7 +128,34 @@ void printer(int n)
 					z=k;
 					if(z!=y && z!=x && (x+y+z==((n)*((n*n*n)+1))/(2)) && cordcom(arax[x-1],arax[y-1],arax[z-1]) && x <y && y<z)
 					{
-						cout<<x<<" "<<y<<" "<<z<<"\n";
+						coord a1=arax[x-1];
+						coord a2=arax[y-1];
+						coord a3=arax[z-1];
+						if(a1.x==a2.x && a1.x==a3.x)
+						{
+							cout<<"On same surface";
+						}
+						else if(a1.y==a2.y && a1.y==a3.y)
+						{
+							cout<<"On same surface";
+						}						
+						else if(a1.z==a2.z && a1.z==a3.z)
+						{
+							cout<<"On same surface";
+						}								
+						else if(a1.y==a1.z && a2.y==a2.z && a3.y==a3.z)
+						{
+							cout<<"On same surface";
+						}											
+						else if(a1.y+a1.z==2 && a2.y+a2.z==2 && a1.y+a1.z==2 )
+						{
+							cout<<"On same surface";
+						}										
+						else
+						{
+							cout<<"On Different surfaces";
+						}		
+						cout<<" - "<<x<<" "<<y<<" "<<z<<"\n";
 						myvector.push_back(coord(x,y,z));
 					}
 				}								
@@ -135,6 +163,7 @@ void printer(int n)
 		}		
 	}
 	cout<<"Herein Lies the magic cube!\n";
+	cout<<"Horizontal :- \n";
 	for(int i1=0;i1<n;i1++)
 	{
 		for(int j1=0;j1<n;j1++)
@@ -145,6 +174,50 @@ void printer(int n)
 		}
 		cout<<"\n";
 	}	
+	cout<<"Vertical :- \n";
+	for(int i1=n-1;i1>=0;i1--)
+	{
+		for(int j1=0;j1<n;j1++)
+		{
+					for(int k1=0;k1<n;k1++)
+						{cout<<arra[j1][i1][k1]<<" ";}
+					cout<<"\n";			
+		}
+		cout<<"\n";
+	}
+	cout<<"Vertical - z direction :- \n";
+	for(int i1=0;i1<n;i1++)
+	{
+		for(int j1=0;j1<n;j1++)
+		{
+					for(int k1=0;k1<n;k1++)
+						{cout<<arra[j1][k1][i1]<<" ";}
+					cout<<"\n";			
+		}
+		cout<<"\n";
+	}		
+	cout<<"Diagonal 1:- \n";
+	for(int i1=0;i1<n;i1++)
+	{
+		for(int j1=0;j1<n;j1++)
+		{
+			cout<<arra[i1][j1][j1]<<" ";
+					
+		}
+		cout<<"\n";
+	}		
+	cout<<"\n";
+	cout<<"Diagonal 2:- \n";
+	for(int i1=0;i1<n;i1++)
+	{
+		for(int j1=0;j1<n;j1++)
+		{
+			cout<<arra[i1][n-1-j1][j1]<<" ";
+
+		}
+		cout<<"\n";
+	}		
+cout<<"\n";
 }
 void cubestat()
 {
@@ -171,8 +244,13 @@ int returnval(coord a)
 {
 	return player[a.x][a.y][a.z];
 }
-bool poswin()
+
+void nextstep()//void?simply do the step,yeah?
 {
+	for(int i=0;i<30;i++)
+	{
+		scorep[i]=0;
+	}
 	int x;
 	int y;
 	int z;
@@ -186,105 +264,69 @@ bool poswin()
 			for(int k=1;k<=27;k++)
 			{
 				z=k;
-				if(z!=y && z!=x && !cordcom(arax[x-1],arax[y-1],arax[z-1]) && x <y && y<z)
+				if( !cordcom(arax[x-1],arax[y-1],arax[z-1]) && x <y && y<z)
 				{
 					if( returnval(arax[x-1])==0 && returnval(arax[y-1])==1 && returnval(arax[z-1])==1 )
 					{
-						player[arax[x-1].x][arax[x-1].y][arax[x-1].z]=1;
-						return true;
+						scorep[x-1]+=27000;
 					}
 					else if(returnval(arax[x-1])==1 && returnval(arax[y-1])==1 && returnval(arax[z-1])==0)
 					{
-						player[arax[z-1].x][arax[z-1].y][arax[z-1].z]=1;
-						return true;
+						scorep[z-1]+=27000;
 					}
 					else if(returnval(arax[x-1])==1 && returnval(arax[y-1])==0 && returnval(arax[z-1])==1 )
 					{
-						player[arax[y-1].x][arax[y-1].y][arax[y-1].z]=1;
-						return true;
+						scorep[y-1]+=27000;
 					}
-				}
-			}								
-		}		
-	}
-	return false;
-}
-
-bool poslose()
-{
-	int x;
-	int y;
-	int z;
-	for(int i=1;i<=27;i++)
-	{
-		x=i;
-		for(int j=1;j<=27;j++)
-		{
-			y=j;
-			for(int k=1;k<=27;k++)
-			{
-				z=k;
-				if(z!=y && z!=x && !cordcom(arax[x-1],arax[y-1],arax[z-1]) && x <y && y<z)
-				{
-					if( returnval(arax[x-1])==0 && returnval(arax[y-1])==2 && returnval(arax[z-1])==2 )
+					else if( returnval(arax[x-1])==0 && returnval(arax[y-1])==2 && returnval(arax[z-1])==2 )
 					{
-						player[arax[x-1].x][arax[x-1].y][arax[x-1].z]=1;
-						return true;
+						scorep[x-1]+=900;
 					}
 					else if(returnval(arax[x-1])==2 && returnval(arax[y-1])==2 && returnval(arax[z-1])==0)
 					{
-						player[arax[z-1].x][arax[z-1].y][arax[z-1].z]=1;
-						return true;
+						scorep[z-1]+=900;
 					}
 					else if(returnval(arax[x-1])==2 && returnval(arax[y-1])==0 && returnval(arax[z-1])==2 )
 					{
-						player[arax[y-1].x][arax[y-1].y][arax[y-1].z]=1;
-						return true;
-					}
-				}
-			}								
-		}		
-	}
-	return false;
-}
-bool nowin()
-{
-	int x;
-	int y;
-	int z;
-	for(int i=1;i<=27;i++)
-	{
-		x=i;
-		for(int j=1;j<=27;j++)
-		{
-			y=j;
-			for(int k=1;k<=27;k++)
-			{
-				z=k;
-				if(z!=y && z!=x && !cordcom(arax[x-1],arax[y-1],arax[z-1]) && x <y && y<z)
-				{
-					if( returnval(arax[x-1])==0 && returnval(arax[y-1])==1 && returnval(arax[z-1])==0 )
+						scorep[y-1]+=900;
+					}					
+					else if( returnval(arax[x-1])==0 && returnval(arax[y-1])==1 && returnval(arax[z-1])==0 )
 					{
-						player[arax[x-1].x][arax[x-1].y][arax[x-1].z]=1;
-						return true;
+						scorep[x-1]+=30;
+						scorep[z-1]+=30;						
 					}
 					else if(returnval(arax[x-1])==1 && returnval(arax[y-1])==0 && returnval(arax[z-1])==0)
 					{
-						player[arax[z-1].x][arax[z-1].y][arax[z-1].z]=1;
-						return true;
+						scorep[y-1]+=30;
+						scorep[z-1]+=30;
 					}
 					else if(returnval(arax[x-1])==0 && returnval(arax[y-1])==0 && returnval(arax[z-1])==1 )
 					{
-						player[arax[y-1].x][arax[y-1].y][arax[y-1].z]=1;
-						return true;
+						scorep[x-1]+=30;
+						scorep[y-1]+=30;						
 					}
+					else if(returnval(arax[x-1])==0 && returnval(arax[y-1])==0 && returnval(arax[z-1])==0 )
+					{
+						scorep[x-1]+=1;
+						scorep[y-1]+=1;
+						scorep[z-1]+=1;						
+					}		
 				}
 			}								
 		}		
 	}
-	return false;
+	int final=0;
+	int index=0;
+	for(int i=0;i<27;i++)
+	{
+		if(scorep[i]>final)
+		{
+			final=scorep[i];
+			index=i;
+		}
+	}
+	player[arax[index].x][arax[index].y][arax[index].z]=1;	
 }
-
 int main()
 {
     int testcase;
@@ -309,7 +351,7 @@ int main()
 	    player[1][1][1]=1;
 	    cout<<"Computer plays :-\n";
 	    cubestat();
-	    cout<<"second players move,mind,enter x y z coordinates from 0 to 2 only!\n";
+	    cout<<"Human move,mind,enter x y z coordinates from 0 to 2 only!\n";
 		int x;
 		int y;
 		int z;
@@ -323,20 +365,7 @@ int main()
 	    {
 	    	if(a==1)
 	    	{
-	    		if(poswin())
-	    		{
-	    			//dowin();
-	    			cout<<"poswin\n";
-	    		}
-	    		else if(poslose())
-	    		{
-	    			cout<<"doblock\n";
-	    		}
-	    		else
-	    		{
-	    			cout<<"nowin\n";
-	    			nowin();
-	    		}
+	    		nextstep();
 	    		a=2;//Player 2's chance
 	    		cout<<"Computer plays :- \n";
 	    		cubestat();
@@ -359,7 +388,7 @@ int main()
     }
     else if(x==1)
     {
-	    cout<<"second players move,mind,enter x y z coordinates from 0 to 2 only!\n";
+	    cout<<"Human move,mind,enter x y z coordinates from 0 to 2 only!\n";
 		int x;
 		int y;
 		int z;
@@ -372,35 +401,15 @@ int main()
 		player[x][y][z]=2;
 		cout<<"You have played\n";
 		cubestat();
-		if(x==1 && y==1 && z==1)
-		{
-			player[x-1][y][z]=1;
-		}
-		else
-		{
-			player[1][1][1]=1;
-		}
+		nextstep();
 		cout<<"Computer plays :-\n";
 		cubestat();
-	    int a=1;
+	    int a=2;
 	    for(int r1=0;r1<18;r1++)
 	    {
 	    	if(a==1)
 	    	{
-	    		if(poswin())
-	    		{
-	    			//dowin();
-	    			cout<<"poswin\n";
-	    		}
-	    		else if(poslose())
-	    		{
-	    			cout<<"doblock\n";
-	    		}
-	    		else
-	    		{
-	    			cout<<"nowin\n";
-	    			nowin();
-	    		}
+	    		nextstep();
 	    		cout<<"Computer plays :-\n";
 	    		a=2;//Player 2's chance
 	    		cubestat();
